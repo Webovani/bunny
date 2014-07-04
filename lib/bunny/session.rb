@@ -501,7 +501,7 @@ module Bunny
     # @private
     def close_all_channels
       @channels.reject {|n, ch| n == 0 || !ch.open? }.each do |_, ch|
-        Bunny::Timeout.timeout(@transport.disconnect_timeout, ClientTimeout) { ch.close }
+        Timeout.timeout(@transport.disconnect_timeout, ClientTimeout) { ch.close }
       end
     end
 

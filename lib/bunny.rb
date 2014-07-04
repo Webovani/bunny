@@ -1,5 +1,3 @@
-# -*- encoding: utf-8; mode: ruby -*-
-
 require "timeout"
 
 require "bunny/version"
@@ -10,8 +8,6 @@ require "bunny/framing"
 require "bunny/exceptions"
 
 require "bunny/socket"
-
-require "bunny/timeout"
 
 begin
   require "openssl"

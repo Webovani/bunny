@@ -101,7 +101,7 @@ module Bunny
     def write(data)
       begin
         if @read_write_timeout
-          Bunny::Timeout.timeout(@read_write_timeout, Bunny::ClientTimeout) do
+          Timeout.timeout(@read_write_timeout, Bunny::ClientTimeout) do
             if open?
               @writes_mutex.synchronize { @socket.write(data) }
               @socket.flush
