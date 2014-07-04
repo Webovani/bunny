@@ -1,5 +1,3 @@
-# -*- encoding: utf-8; mode: ruby -*-
-
 require "timeout"
 
 require "bunny/version"
@@ -81,8 +79,5 @@ module Bunny
     ensure
       client.stop
     end
-
-    # backwards compatibility
-    :run_ok
   end
 end
