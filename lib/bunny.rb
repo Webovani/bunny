@@ -64,21 +64,4 @@ module Bunny
 
     conn
   end
-
-
-  def self.run(connection_string_or_opts = {}, opts = {}, &block)
-    raise ArgumentError, 'Bunny#run requires a block' unless block
-
-    client = Session.new(connection_string_or_opts, opts)
-
-    begin
-      client.start
-      block.call(client)
-    ensure
-      client.stop
-    end
-
-    # backwards compatibility
-    :run_ok
-  end
 end

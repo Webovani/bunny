@@ -222,7 +222,7 @@ module Bunny
 
     def self.reacheable?(host, port, timeout)
       begin
-        s = Bunny::SocketImpl.open(host, port,
+        s = Bunny::Socket.open(host, port,
           :socket_timeout => timeout)
 
         true
@@ -239,7 +239,7 @@ module Bunny
 
     def initialize_socket
       begin
-        @socket = Bunny::SocketImpl.open(@host, @port,
+        @socket = Bunny::Socket.open(@host, @port,
           :keepalive      => @opts[:keepalive],
           :socket_timeout => @connect_timeout)
       rescue StandardError, ClientTimeout => e
@@ -322,7 +322,7 @@ module Bunny
       raise ArgumentError, "cannot wrap nil into TLS socket, @tls_context is nil. This is a Bunny bug." unless socket
       raise "cannot wrap a socket into TLS socket, @tls_context is nil. This is a Bunny bug." unless @tls_context
 
-      s = Bunny::SSLSocketImpl.new(socket, @tls_context)
+      s = Bunny::SSLSocket.new(socket, @tls_context)
       s.sync_close = true
       s
     end
@@ -384,20 +384,15 @@ module Bunny
     end
 
     def default_tls_certificates
-      if defined?(JRUBY_VERSION)
-        # see https://github.com/jruby/jruby/issues/1055. MK.
-        []
-      else
-        default_ca_file = ENV[OpenSSL::X509::DEFAULT_CERT_FILE_ENV] || OpenSSL::X509::DEFAULT_CERT_FILE
-        default_ca_path = ENV[OpenSSL::X509::DEFAULT_CERT_DIR_ENV] || OpenSSL::X509::DEFAULT_CERT_DIR
+      default_ca_file = ENV[OpenSSL::X509::DEFAULT_CERT_FILE_ENV] || OpenSSL::X509::DEFAULT_CERT_FILE
+      default_ca_path = ENV[OpenSSL::X509::DEFAULT_CERT_DIR_ENV] || OpenSSL::X509::DEFAULT_CERT_DIR
 
-        [
-          default_ca_file,
-          File.join(default_ca_path, 'ca-certificates.crt'), # Ubuntu/Debian
-          File.join(default_ca_path, 'ca-bundle.crt'),       # Amazon Linux & Fedora/RHEL
-          File.join(default_ca_path, 'ca-bundle.pem')        # OpenSUSE
-          ].uniq
-      end
+      [
+        default_ca_file,
+        File.join(default_ca_path, 'ca-certificates.crt'), # Ubuntu/Debian
+        File.join(default_ca_path, 'ca-bundle.crt'),       # Amazon Linux & Fedora/RHEL
+        File.join(default_ca_path, 'ca-bundle.pem')        # OpenSUSE
+      ].uniq
     end
 
     def initialize_tls_certificate_store(certs)
